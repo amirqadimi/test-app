@@ -1,0 +1,201 @@
+.dialog-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+  background-color: rgba(0,0,0,0.4);
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.dialog {
+  width: 100%;
+  max-width: 900px;
+  padding: 40px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,0.6);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.dialog__header h3 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.dialog__close {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog__close img {
+  height: 16px;
+  width: 16px;
+}
+
+.dialog__total {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 60px;
+}
+
+.dialog__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.dialog__footer .button:not(:last-of-type){
+  margin-right: 10px;
+}
+
+.dialog__error {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  font-size: 12px;
+  color: #fd4343;
+  width: 100%;
+  text-align: right;
+}
+
+.button {
+  cursor: pointer;
+  line-height: 40px;
+  height: 40;
+  padding: 0 15px;
+  min-width: 100px;
+  background-color: #E7E7E7;
+  font-size: 18px;
+}
+
+.button--primary {
+  background-color: #3B77B3;
+  color: #fff;
+}
+
+.button--disabled {
+  background-color: #bebebe;
+  color: #9e9e9e;
+  pointer-events: none;
+}
+
+.dialog-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.dialog-item:last-of-type {
+  margin-bottom: 60px;
+}
+
+@media only screen and (max-width: 480px){
+  .dialog-item:last-of-type {
+    margin-bottom: 40px;
+  }
+}
+
+.dialog-item__title {
+  flex: none;
+  width: calc(100% - 210px);
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.dialog-item__img {
+  width: 60px;
+  height: auto;
+  margin-right: 10px;
+  flex: none;
+}
+
+@media only screen and (max-width: 480px){
+  .dialog-item__img {
+    display: none;
+  }
+}
+
+.dialog-item__name {
+  width: calc(100% - 70px);
+}
+
+@media only screen and (max-width: 480px){
+  .dialog-item__name {
+    width: 100%;
+  }
+}
+
+.dialog-item__name span {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 18px;
+  width: 100%;
+}
+
+.dialog-item__actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+}
+
+.dialog-item__counter {
+  flex: none;
+  display: flex;
+  align-items: center;
+}
+
+.dialog-item__counter button {
+  width: 30px;
+  height: 30px;
+  background-color: #E7E7E7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-item__counter button img {
+  width: 16px;
+  height: 16px;
+}
+
+.dialog-item__counter input {
+  display: inline-block;
+  height: 30px;
+  width: 40px;
+  text-align: center;
+  line-height: 30px;
+  font-size: 18px;
+  border: 1px solid #E7E7E7;
+  margin: 0 10px;
+}
+
+.dialog-item__total {
+  text-align: right;
+  font-size: 18px;
+  width: 90px;
+  flex: none;
+}

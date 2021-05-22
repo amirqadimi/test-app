@@ -1,10 +1,10 @@
 import React from "react";
 
-export const Navbar = ({user}) => {
+export const Navbar = ({user, setIsDialogOpen}) => {
 
 	const onOpenBuyDialog = (args) => {
 		args.preventDefault();
-		alert("Replace this alert with your implementation of the challenge");
+		setIsDialogOpen(true);
 	};
 
 	return (
