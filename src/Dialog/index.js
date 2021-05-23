@@ -4,26 +4,35 @@ import { ACTION_ITEM, ACTION_USER, ACTION_STOCK } from '../constants';
 import cross_icon from '../icons/cross.png';
 import minus_icon from '../icons/minus.png';
 import plus_icon from '../icons/plus.png';
+import { service } from '../service';
 import './styles.css';
 
 
 
-const Item = ({data, dispatchSelectedItems}) => {
+const Item = ({data, dispatchSelectedItems, showAlert, is_loading}) => {
   const [count, setCount] = React.useState(0);
 
   const remove = () => {
+    if(is_loading) return;
+
     if(count-1 >= 0) {
       setCount( count => count-1);
     }
   };
 
   const add = () => {
-    if(count+1 <= data.quantity) {
+    if(is_loading) return;
+
+    if(!data.quantity) {
+      showAlert('Item is no longer available');
+    }else if(count+1 <= data.quantity) {
       setCount( count => count+1);
     }
   };
 
   const onChange = (e) => {
+    if(is_loading) return;
+
     const value = e.target.value;
     if (!value) {
       setCount(0);
@@ -85,16 +94,25 @@ const itemsReducer = (state, action) => {
 
 const initialState = {};
 
-const Dialog = ({ stock, user, dispachStock, dispatchUser, closeDialog }) => {
+const Dialog = ({ stock, user, dispatchStock, dispatchUser, closeDialog, showAlert }) => {
+  const [is_loading, setIsLoading] = React.useState(false);
   const [selectedItems, dispatchSelectedItems] = React.useReducer(itemsReducer, initialState);
   const total_price = sum(selectedItems);
   const has_enough_gold = user.balance >= total_price;
-  const is_buy_enabled = has_enough_gold && Object.values(selectedItems).length;
+  const is_buy_enabled = has_enough_gold && Object.values(selectedItems).length && !is_loading;
 
   const onBuy = () => {
-    dispatchUser({type: ACTION_USER.CHANGE_BALANCE, payload: user.balance - total_price});
-    dispachStock({type: ACTION_STOCK.CHANGE, payload: Object.values(selectedItems)});
-    closeDialog();
+    setIsLoading(true);
+    service.buy()
+      .then(()=> {
+        dispatchUser({type: ACTION_USER.CHANGE_BALANCE, payload: user.balance - total_price});
+        dispatchStock({type: ACTION_STOCK.CHANGE, payload: Object.values(selectedItems)});
+        closeDialog();
+      })
+      .catch(()=> {
+        showAlert('Request failed, please try again later');
+        setIsLoading(false);
+      })
   }
 
   return (
@@ -105,7 +123,16 @@ const Dialog = ({ stock, user, dispachStock, dispatchUser, closeDialog }) => {
           <button className='dialog__close' onClick={closeDialog}><img src={cross_icon} alt='Close icon'/></button>
         </div>
         <div className='dialog__content'>
-          <div>{stock.map( (item) => <Item key={item.id} data={item} dispatchSelectedItems={dispatchSelectedItems} /> )}</div>
+          <div>
+            {stock.map( (item) => 
+              <Item 
+                key={item.id} 
+                data={item} 
+                dispatchSelectedItems={dispatchSelectedItems} 
+                is_loading={is_loading}
+                showAlert={showAlert} />
+            )}
+          </div>
           <div className='dialog__total'>
             {!has_enough_gold && <div className='dialog__error'>Not enough gold in your account!</div>}
             <span>Total</span>

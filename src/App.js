@@ -1,4 +1,5 @@
 import React, { useState, useReducer, useEffect } from "react";
+import Alert from './Alert';
 import { ACTION_USER, ACTION_STOCK } from './constants';
 import { service } from "./service";
 import { Navbar } from "./Navbar";
@@ -42,7 +43,8 @@ const stockReducer = (state, action) => {
 
 function App() {
 
-	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [alert_message, setAlertMessage] = useState('');
+	const [is_dialog_open, setIsDialogOpen] = useState(false);
 	const [user, dispatchUser] = useReducer(userReducer, null);
 	const [stock, dispatchStock] = useReducer(stockReducer, []);
 
@@ -66,8 +68,16 @@ function App() {
 					Have a nice day
 				</p>
 				<Stock stock={stock} />
-        {isDialogOpen && 
-          <Dialog stock={stock} user={user} dispatchUser={dispatchUser} dispachStock={dispatchStock} closeDialog={() => setIsDialogOpen(false)}/>}
+        {is_dialog_open && 
+          <Dialog 
+            stock={stock} 
+            user={user} 
+            dispatchUser={dispatchUser} 
+            dispatchStock={dispatchStock} 
+            showAlert={setAlertMessage}
+            closeDialog={() => setIsDialogOpen(false)}/>
+        }
+        {alert_message && <Alert closeAlert={()=> setAlertMessage('')} message={alert_message}/>}
 				<Footer />
 			</div>
 		</>

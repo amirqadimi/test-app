@@ -49,16 +49,23 @@ function simulateSuccessfulRequest(result) {
 	});
 }
 
+let buy_count = 0;
+
 function simulateFailureRequest() {
-	return new Promise((_, reject) => {
-		setTimeout(
-			() => reject(),
-			Math.random() * 100
-		);
+  buy_count += 1;
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+        if(buy_count%3 === 0) {
+          reject();
+        } else {
+          resolve();
+        }
+      },Math.random() * 100);
 	});
 }
 
 export const service = {
 	getUser: () => simulateSuccessfulRequest(user),
-	list: () => simulateSuccessfulRequest(items)
+	list: () => simulateSuccessfulRequest(items),
+	buy: () => simulateFailureRequest(),
 };
