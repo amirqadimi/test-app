@@ -1,73 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import cn from 'class-names';
 import { ACTION_ITEM, ACTION_USER, ACTION_STOCK } from '../constants';
 import cross_icon from '../icons/cross.png';
-import minus_icon from '../icons/minus.png';
-import plus_icon from '../icons/plus.png';
 import { service } from '../service';
+import Item from './item';
 import './styles.css';
-
-
-
-const Item = ({data, dispatchSelectedItems, showAlert, is_loading}) => {
-  const [count, setCount] = React.useState(0);
-
-  const remove = () => {
-    if(is_loading) return;
-
-    if(count-1 >= 0) {
-      setCount( count => count-1);
-    }
-  };
-
-  const add = () => {
-    if(is_loading) return;
-
-    if(!data.quantity) {
-      showAlert('Item is no longer available');
-    }else if(count+1 <= data.quantity) {
-      setCount( count => count+1);
-    }
-  };
-
-  const onChange = (e) => {
-    if(is_loading) return;
-
-    const value = e.target.value;
-    if (!value) {
-      setCount(0);
-    }
-    if( /^\d+$/.test(value) && value <= data.quantity && value > 0) {
-      const num = Number(value);
-      setCount(num);
-    }
-  };
-
-  React.useEffect(() => {
-    if(count) {
-      dispatchSelectedItems({type: ACTION_ITEM.CHANGE, payload: {...data, count}});
-    } else {
-      dispatchSelectedItems({type: ACTION_ITEM.REMOVE, payload: data});
-    }
-  }, [count]);
-
-  return (
-    <div className='dialog-item'>
-      <div className='dialog-item__title'>
-        <div><img className='dialog-item__img' src={data.image} alt={data.name} /></div>
-        <div className='dialog-item__name'><span>{data.name}</span></div>
-      </div>
-      <div className='dialog-item__actions'>
-        <div className='dialog-item__counter'>
-          <button onClick={remove}><img src={minus_icon} alt='Minus'/></button>
-          <input type='text' value={count > 0 ? count : ''} onChange={onChange}/>
-          <button onClick={add}><img src={plus_icon} alt='Plus'/></button>
-        </div>
-        <div className='dialog-item__total'>{data.price} gold</div>
-      </div>
-    </div>
-  );
-};
 
 const sum = list => {
   const arr = Object.values(list);
@@ -128,7 +66,8 @@ const Dialog = ({ stock, user, dispatchStock, dispatchUser, closeDialog, showAle
               <Item 
                 key={item.id} 
                 data={item} 
-                dispatchSelectedItems={dispatchSelectedItems} 
+                dispatchSelectedItems={dispatchSelectedItems}
+                selectedItems={selectedItems}
                 is_loading={is_loading}
                 showAlert={showAlert} />
             )}
@@ -152,6 +91,25 @@ const Dialog = ({ stock, user, dispatchStock, dispatchUser, closeDialog, showAle
       </div>
     </div>
   );
-}
+};
+
+Dialog.propTypes = {
+  stock: PropTypes.arrayOf(PropTypes.shape({
+    id : PropTypes.number.isRequired,
+		name : PropTypes.string.isRequired,
+		price : PropTypes.number.isRequired,
+		quantity : PropTypes.number.isRequired,
+    image: PropTypes.string.isRequired
+  })),
+  user: PropTypes.shape({
+    id : PropTypes.number.isRequired,
+    login : PropTypes.string.isRequired,
+    balance : PropTypes.number.isRequired
+  }),
+  dispatchStock: PropTypes.func,
+  dispatchUser: PropTypes.func,
+  closeDialog: PropTypes.func,
+  showAlert: PropTypes.func
+};
 
 export default Dialog;
